@@ -11,6 +11,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Logo } from "@/components/layout/Logo";
 import { navConfig, roleLabel } from "@/components/layout/nav";
 import { useAuth } from "@/lib/auth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export function AppShell({ children }) {
   const { user, logout } = useAuth();
@@ -28,12 +29,12 @@ export function AppShell({ children }) {
       try {
         const d = await notificationsApi.list();
         const id = Number(getCurrentSession()?.id);
-        const count = (d || []).filter(n => (!n.userId || Number(n.userId) === id) && !n.read).length;
+        const count = (d || []).filter(n => Number(n.userId) === id && !n.read).length;
         if (alive) setUnread(count);
       } catch { if (alive) setUnread(0); }
     };
-    loadUnread();
-    const timer = setInterval(loadUnread, 30000);
+    if (user) loadUnread();
+    const timer = setInterval(() => { if (user) loadUnread(); }, 30000);
     return () => { alive = false; clearInterval(timer); };
   }, [pathname, user?.id]);
 
