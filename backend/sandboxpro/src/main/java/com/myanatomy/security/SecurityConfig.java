@@ -295,7 +295,8 @@ public class SecurityConfig {
     "http://localhost:*",
     "http://127.0.0.1:*",
     "http://192.168.1.2:*",
-    "http://192.168.56.1:*"
+    "http://192.168.56.1:*",
+    "https://*.vercel.app"
 ));
         // HTTP methods
         configuration.setAllowedMethods(
