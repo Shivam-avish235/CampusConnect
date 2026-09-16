@@ -8,8 +8,8 @@ import { notificationsApi, getCurrentSession } from "@/api/campusApi";
 const cats=["All","Academic","Assignment","Placement","Announcement","System"];
 const catTone={Academic:"info",Assignment:"warning",Placement:"purple",Announcement:"success",System:"neutral"};
 export function NotificationsPage({role}){
- const [items,setItems]=useState([]),[cat,setCat]=useState("All");const userId=Number(getCurrentSession()?.profileId || getCurrentSession()?.id);
- const load=async()=>{try{const d=await notificationsApi.list();setItems((d||[]).filter(n=>!n.userId||n.userId===userId))}catch(e){toast.error(e.response?.data?.message||"Unable to load notifications")}};
+ const [items,setItems]=useState([]),[cat,setCat]=useState("All");const session=getCurrentSession();const userId=Number(session?.id);
+ const load=async()=>{try{const d=await notificationsApi.list();setItems((d||[]).filter(n=>!n.userId||Number(n.userId)===userId))}catch(e){toast.error(e.response?.data?.message||"Unable to load notifications")}};
  useEffect(()=>{load()},[]);
  const list=items.filter(n=>cat==="All"||n.type===cat),unread=items.filter(n=>!n.read).length;
  async function toggle(n){try{await notificationsApi.update(n.id,{...n,read:!n.read});load()}catch(e){toast.error("Unable to update notification")}}
